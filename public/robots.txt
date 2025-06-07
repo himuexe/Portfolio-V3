@@ -6,4 +6,4 @@ User-agent: *
 Disallow: /studio/
 
 # Sitemap
-Sitemap: https://portfoliov3.dev/sitemap.xml 
+Sitemap: https://portfolio-v3-six-olive.vercel.app/sitemap.xml 

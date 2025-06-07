@@ -2,8 +2,15 @@ import { MetadataRoute } from 'next'
 import { client } from '../../sanity/lib/client'
 import { getProjectsSlug } from '../../sanity/lib/queries'
 
+// Define a type for your project slug items
+interface ProjectSlug {
+  slug: {
+    current: string
+  }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://portfoliov3.dev'
+  const baseUrl = 'https://portfolio-v3-six-olive.vercel.app/'
   
   // Static routes
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -35,11 +42,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Dynamic work project routes
   try {
-    const projectSlugs = await client.fetch(getProjectsSlug)
+    const projectSlugs = await client.fetch<ProjectSlug[]>(getProjectsSlug)
     
     const projectRoutes: MetadataRoute.Sitemap = projectSlugs
-      .filter((item: any) => item && item.slug && typeof item.slug.current === 'string')
-      .map((item: any) => ({
+      .filter((item) => item && item.slug && typeof item.slug.current === 'string')
+      .map((item) => ({
         url: `${baseUrl}/work/${item.slug.current}`,
         lastModified: new Date(),
         changeFrequency: 'monthly' as const,
@@ -52,4 +59,4 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Return static routes if dynamic generation fails
     return staticRoutes
   }
-} 
+}

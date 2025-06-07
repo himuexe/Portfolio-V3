@@ -55,7 +55,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://portfoliov3.dev",
+    url: "https://portfolio-v3-six-olive.vercel.app",
     title: "Himanshu Sharma | Creative Full Stack Developer",
     description: "Creative developer  crafting exceptional digital experiences with modern web technologies.",
     siteName: "Portfolio V3",
