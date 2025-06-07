@@ -1,0 +1,158 @@
+@import url("https://fonts.googleapis.com/css2?family=Antonio:wght@100;200;300;400;500;600;700&display=swap");
+@import "tailwindcss";
+
+:root {
+  --background: #111111;
+  --foreground: #ffffff;
+}
+
+@theme inline {
+  --color-background: #111111;
+  --color-foreground: #ffffff;
+  --font-humane: var(--font-humane);
+  --font-antonio: "Antonio", sans-serif;
+  
+  /* Custom breakpoints */
+  --breakpoint-phone: 550px;
+  --breakpoint-xsphone: 450px;
+  --breakpoint-md: 780px;
+  --breakpoint-lg: 1300px;
+  --breakpoint-desktop: 1200px;
+  --breakpoint-xxl: 1550px;
+  
+  /* Custom animations */
+  --animate-page-transition: moveAnimation 2.5s linear;
+  --animate-fade-in: fadeIn 2.5s linear;
+}
+
+@keyframes moveAnimation {
+  0% { transform: translateY(100%); }
+  50% { transform: translateY(0); }
+  100% { transform: translateY(-100%); visibility: hidden; }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* Underpage transition animation from V2 */
+@keyframes underPageTransition {
+  0% { transform: translateY(100%); }
+  25% { transform: translateY(0%); }
+  50% { transform: translateY(0%); }
+  75% { transform: translateY(0%); }
+  100% { transform: translateY(-100%); visibility: hidden; }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Antonio", sans-serif;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+}
+
+/* Hide scrollbar while still allowing scrolling */
+html,
+body {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer & Edge */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+/* Smooth scroll setup for Lenis */
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+/* Custom utility classes */
+.mix-blend-difference {
+  mix-blend-mode: difference;
+}
+
+.font-humane {
+  font-family: var(--font-humane), sans-serif;
+}
+
+.font-Antonio {
+  font-family: "Antonio", sans-serif;
+}
+
+/* Animation utilities */
+.animate-page-transition {
+  animation: var(--animate-page-transition);
+}
+
+.animate-fadeIn {
+  animation: var(--animate-fade-in);
+}
+
+.underpage-transition {
+  animation: underPageTransition 2.5s ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+.page-transition {
+  animation: moveAnimation 2.5s ease-in-out;
+  animation-fill-mode: forwards;
+}
+
+/* Rotation classes from V2 - fixed to match V2 implementation */
+.rotation {
+  transform: matrix3d(
+    0.5,
+    0,
+    -0.5,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0.5,
+    0,
+    0.5,
+    0,
+    100,
+    50,
+    0,
+    1
+  );
+}
+
+.rotationInitial {
+  transform: matrix3d(
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1
+  );
+  transition: transform 3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* Removed MacBook related CSS */ 

@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Block access to admin/studio pages
+User-agent: *
+Disallow: /studio/
+
+# Sitemap
+Sitemap: https://portfoliov3.dev/sitemap.xml 
