@@ -14,7 +14,7 @@ function HeaderAbout() {
         <Image
           priority
           className="translate-x-[10%] animate-fadeIn object-cover"
-          src="/image/me.jpg"
+          src="/image/me.jpeg"
           alt="Profile picture"
           width={800}
           height={600}

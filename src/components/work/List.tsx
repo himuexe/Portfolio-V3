@@ -80,9 +80,9 @@ function List({ projects, categories }: IProps) {
 
   return (
     <div className="mx-auto w-full max-w-[150rem] px-0 lg:px-10 lg:pt-20">
-      <div className="md:pt-18 sticky top-0 z-10 flex flex-col justify-between px-5 pt-16 mix-blend-difference md:top-10 md:flex-row md:items-end">
-        <div className="flex w-full flex-col items-end justify-between space-x-5 md:flex-row lg:items-center">
-          <div className="relative mb-4 flex w-20 items-center justify-between mix-blend-difference">
+      <div className="md:pt-18 flex flex-col justify-between px-5 pt-16 mix-blend-difference md:flex-row md:items-end">
+        <div className="flex w-full flex-col items-start justify-between space-y-4 md:flex-row md:items-center md:space-y-0 md:space-x-5 lg:items-center">
+          <div className="relative mb-4 flex w-20 items-center justify-between mix-blend-difference md:mb-0">
             <div
               className={`absolute h-8 w-8 ${
                 isBulletList ? "translate-x-0" : "translate-x-[49.6px]"
@@ -111,7 +111,7 @@ function List({ projects, categories }: IProps) {
               </svg>
             </button>
           </div>
-          <div className="mt-2 flex items-center space-x-5 font-Antonio text-base underline md:mt-0">
+          <div className="flex flex-wrap items-center gap-3 font-Antonio text-base underline md:gap-5">
             {allCategories.map((c) => (
               <button
                 className={`${
