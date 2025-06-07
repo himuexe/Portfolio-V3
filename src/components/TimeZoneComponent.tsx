@@ -4,21 +4,28 @@ import React, { useState, useEffect } from "react";
 import AnimUp from "./animated/AnimUp";
 
 const TimeZoneComponent: React.FC<{ inView: boolean }> = ({ inView }) => {
-  const [currentTimezone, setcurrentTimezone] = useState<string>("");
+  const [currentTime, setCurrentTime] = useState<string>("");
 
   useEffect(() => {
-    const getcurrentTime = () => {
-      const currentDate = new Date().toLocaleString("en-US", {
-        timeZone: "IST",
-      });
-      return currentDate;
+    const getCurrentTime = () => {
+      const options: Intl.DateTimeFormatOptions = {
+        timeZone: "Asia/Kolkata",
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: true,
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+      };
+      return new Date().toLocaleString("en-US", options);
     };
 
-    setcurrentTimezone(getcurrentTime());
+    // Update immediately
+    setCurrentTime(getCurrentTime());
 
- 
+    // Update every minute
     const intervalId = setInterval(() => {
-      setcurrentTimezone(getcurrentTime());
+      setCurrentTime(getCurrentTime());
     }, 60000);
 
     return () => clearInterval(intervalId);
@@ -30,10 +37,10 @@ const TimeZoneComponent: React.FC<{ inView: boolean }> = ({ inView }) => {
         <h2 className="opacity-50">Time zone, Delhi, India</h2>
       </AnimUp>
       <AnimUp duration={2.5} inView={inView} className="mt-2">
-        <p>{currentTimezone}</p>
+        <p>{currentTime}</p>
       </AnimUp>
     </div>
   );
 };
 
-export default TimeZoneComponent; 
+export default TimeZoneComponent;
