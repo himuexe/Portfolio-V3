@@ -77,7 +77,7 @@ const nextConfig: NextConfig = {
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https://cdn.sanity.io https://images.unsplash.com https://va.vercel-scripts.com",
               "media-src 'self' https://cdn.sanity.io",
-              "connect-src 'self' https://vitals.vercel-insights.com https://va.vercel-scripts.com https://*.sanity.io wss://*.sanity.io",
+              "connect-src 'self' https://api.web3forms.com https://vitals.vercel-insights.com https://va.vercel-scripts.com https://*.sanity.io wss://*.sanity.io",
               "frame-src 'none'",
               "object-src 'none'",
               "base-uri 'self'",

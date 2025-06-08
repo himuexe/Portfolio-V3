@@ -5,6 +5,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import LenisScrollProvider from "@/components/layout/LenisScrollProvider";
 import ProgressBar from "@/components/layout/ProgressBar";
+import ScrollProgress from "@/components/animated/ScrollProgress";
 import Loading from "@/components/layout/Loading";
 import Navbar from "@/components/layout/navbar/Navbar";
 import ErrorBoundary from "@/components/layout/ErrorBoundary";
@@ -90,6 +91,7 @@ export default function RootLayout({
         <Providers>
           <LenisScrollProvider>
             <ProgressBar />
+            <ScrollProgress />
             <Loading />
             <ErrorBoundary>
               <Navbar />

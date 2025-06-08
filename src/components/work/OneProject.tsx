@@ -8,6 +8,7 @@ import AnimUp from "@/components/animated/AnimUp";
 import Cursor from "@/components/Cursor";
 import { useRouter } from "next/navigation";
 import urlFor from "../../../sanity/lib/image";
+import { motion } from "framer-motion";
 
 interface IProps {
   project: IProject;
@@ -86,13 +87,20 @@ function OneProject({
   };
 
   return (
-    <div
+    <motion.div
       ref={ref}
       className="group relative flex h-full flex-col items-center overflow-hidden rounded-lg bg-black/10 backdrop-blur-sm transition-all duration-300 hover:bg-black/20"
+      whileHover={{ 
+        y: -4,
+        transition: { duration: 0.3 }
+      }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+      transition={{ duration: 0.6, delay: 0.1 }}
     >
       <button
         onClick={onProjectClick}
-        className="absolute z-30 h-full w-full bg-transparent"
+        className="absolute z-30 h-full w-full bg-transparent cursor-pointer"
       />
       
       <Cursor
@@ -105,33 +113,40 @@ function OneProject({
           <h2 className="font-Antonio text-xl font-bold uppercase sm:text-2xl">
             {project.name}
           </h2>
-          <div
-            onClick={onProjectClick} 
+          <motion.div
+            onClick={onProjectClick}
             className="cursor-pointer p-1"
+            whileHover={{ rotate: -45, scale: 1.1 }}
+            transition={{ duration: 0.2 }}
           >
             <Image
-              className="rotate-12 transform duration-500 group-hover:-rotate-[80deg]"
+              className="rotate-12 transform"
               src="/Arrow.svg"
               alt="arrow"
               width={28}
               height={28}
             />
-          </div>
+          </motion.div>
         </AnimUp>
         
-        <div 
+        <div
           onClick={onProjectClick}
-          className="overflow-hidden"
+          className="overflow-hidden cursor-pointer"
         >
           <AnimUp inView={inView} duration={2}>
             <div className="relative aspect-[4/3] overflow-hidden">
-              <Image
-                className="h-full w-full transform object-cover opacity-90 transition duration-700 ease-out group-hover:scale-105 group-hover:opacity-100"
-                src={getImageUrl()}
-                alt={getImageAlt()}
-                width={800}
-                height={600}
-              />
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.4 }}
+              >
+                <Image
+                  className="h-full w-full object-cover opacity-90 transition duration-300 ease-out group-hover:opacity-100"
+                  src={getImageUrl()}
+                  alt={getImageAlt()}
+                  width={800}
+                  height={600}
+                />
+              </motion.div>
             </div>
           </AnimUp>
         </div>
@@ -172,7 +187,7 @@ function OneProject({
           )}
         </AnimUp>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

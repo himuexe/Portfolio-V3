@@ -1,16 +1,22 @@
 "use client";
 import { Plane, shaderMaterial } from "@react-three/drei";
 import { extend, useFrame, useThree } from "@react-three/fiber";
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 
-// Extend Three.js with custom shader material
+// Extend Three.js with enhanced shader material
 extend({
-  Pseudo3DMaterial: shaderMaterial(
+  EnhancedBackgroundMaterial: shaderMaterial(
     {
       uTime: 0,
-      uColorStart: new THREE.Color("#ffffff"),
-      uColorEnd: new THREE.Color("#111111"),
+      uMouse: new THREE.Vector2(0.5, 0.5),
+      uScrollY: 0,
+      uColorPrimary: new THREE.Color("#ffffff"),
+      uColorSecondary: new THREE.Color("#111111"),
+      uColorAccent: new THREE.Color("#333333"),
+      uNoiseScale: 5.0,
+      uNoiseSpeed: 0.1,
+      uMouseInfluence: 0.3,
     },
     // Vertex Shader
     `
@@ -26,29 +32,33 @@ extend({
     
         vUv = uv;
     }`,
-    // Fragment Shader
+    // Enhanced Fragment Shader
     `
     uniform float uTime;
-    uniform vec3 uColorStart;
-    uniform vec3 uColorEnd;
+    uniform vec2 uMouse;
+    uniform float uScrollY;
+    uniform vec3 uColorPrimary;
+    uniform vec3 uColorSecondary;
+    uniform vec3 uColorAccent;
+    uniform float uNoiseScale;
+    uniform float uNoiseSpeed;
+    uniform float uMouseInfluence;
     
     varying vec2 vUv;
     
-    //    Classic Perlin 3D Noise 
-    //    by Stefan Gustavson
-    //
+    // Classic Perlin 3D Noise by Stefan Gustavson
     vec4 permute(vec4 x){ return mod(((x*34.0)+1.0)*x, 289.0); }
     vec4 taylorInvSqrt(vec4 r){ return 1.79284291400159 - 0.85373472095314 * r; }
     vec3 fade(vec3 t) { return t*t*t*(t*(t*6.0-15.0)+10.0); }
     
     float cnoise(vec3 P)
     {
-        vec3 Pi0 = floor(P); // Integer part for indexing
-        vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
+        vec3 Pi0 = floor(P);
+        vec3 Pi1 = Pi0 + vec3(1.0);
         Pi0 = mod(Pi0, 289.0);
         Pi1 = mod(Pi1, 289.0);
-        vec3 Pf0 = fract(P); // Fractional part for interpolation
-        vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
+        vec3 Pf0 = fract(P);
+        vec3 Pf1 = Pf0 - vec3(1.0);
         vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
         vec4 iy = vec4(Pi0.yy, Pi1.yy);
         vec4 iz0 = Pi0.zzzz;
@@ -111,45 +121,140 @@ extend({
         return 2.2 * n_xyz;
     }
     
+    // Fractal Brownian Motion for more complex noise
+    float fbm(vec3 p) {
+        float value = 0.0;
+        float amplitude = 0.5;
+        float frequency = 1.0;
+        
+        for(int i = 0; i < 4; i++) {
+            value += amplitude * cnoise(p * frequency);
+            amplitude *= 0.5;
+            frequency *= 2.0;
+        }
+        
+        return value;
+    }
+    
     void main()
     {
-        // Displace the UV
-        vec2 displacedUv = vUv + cnoise(vec3(vUv * 5.0, uTime * 0.1));
-    
-        // Perlin noise
-        float strength = cnoise(vec3(displacedUv * 8.0, uTime * 0.2));
-    
-        // Outer glow
-        float outerGlow = distance(vUv, vec2(0.5)) * 3.0;
-        strength += outerGlow;
-    
-        // Apply cool step
-        strength += step(- 0.2, strength) * 1.5;
-    
-        // Final color
-        vec3 color = mix(uColorStart, uColorEnd, strength);
-    
-        gl_FragColor = vec4(color, 1.0);
+        vec2 uv = vUv;
+        
+        // Mouse influence on UV coordinates
+        vec2 mouseOffset = (uMouse - 0.5) * uMouseInfluence;
+        vec2 distortedUv = uv + mouseOffset;
+        
+        // Multiple noise layers for depth
+        float time = uTime * uNoiseSpeed;
+        
+        // Base layer - slow moving
+        vec2 baseUv = distortedUv + cnoise(vec3(distortedUv * 2.0, time * 0.5)) * 0.1;
+        float baseNoise = fbm(vec3(baseUv * uNoiseScale, time));
+        
+        // Detail layer - faster moving
+        vec2 detailUv = distortedUv + cnoise(vec3(distortedUv * 4.0, time * 1.2)) * 0.05;
+        float detailNoise = cnoise(vec3(detailUv * uNoiseScale * 2.0, time * 1.5));
+        
+        // Micro detail layer
+        float microNoise = cnoise(vec3(distortedUv * uNoiseScale * 8.0, time * 2.0)) * 0.3;
+        
+        // Combine noise layers
+        float combinedNoise = baseNoise + detailNoise * 0.5 + microNoise;
+        
+        // Mouse proximity effect
+        float mouseDistance = distance(uv, uMouse);
+        float mouseEffect = 1.0 - smoothstep(0.0, 0.5, mouseDistance);
+        mouseEffect = pow(mouseEffect, 2.0) * 0.3;
+        
+        // Radial gradient from center
+        float radialGradient = distance(uv, vec2(0.5)) * 2.0;
+        
+        // Scroll-based color transitions
+        float scrollInfluence = sin(uScrollY * 0.01) * 0.5 + 0.5;
+        
+        // Dynamic strength calculation
+        float strength = combinedNoise;
+        strength += radialGradient * 1.2;
+        strength += mouseEffect;
+        strength += step(-0.1, strength) * 0.8;
+        
+        // Enhanced color mixing with full visibility restored
+        vec3 color1 = mix(uColorSecondary, uColorAccent, scrollInfluence);
+        vec3 color2 = mix(uColorAccent, uColorPrimary, mouseEffect);
+        vec3 finalColor = mix(color1, color2, strength);
+        
+        // Add full color variations for rich animation
+        finalColor += vec3(
+            sin(combinedNoise * 3.14159 + time) * 0.05,
+            cos(combinedNoise * 3.14159 + time * 1.1) * 0.05,
+            sin(combinedNoise * 3.14159 + time * 0.9) * 0.05
+        );
+        
+        // Allow full range for dynamic text color switching
+        finalColor = clamp(finalColor, 0.0, 1.0);
+        
+        gl_FragColor = vec4(finalColor, 1.0);
     }
     `
   ),
 });
 
 function HeaderBackground() {
-  const shaderRef = useRef<{ uTime: number } | null>(null);
+  const shaderRef = useRef<any>(null);
   const { viewport } = useThree();
+  const [mouse, setMouse] = useState({ x: 0.5, y: 0.5 });
+  const [scrollY, setScrollY] = useState(0);
+
+  // Mouse tracking
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      setMouse({
+        x: event.clientX / window.innerWidth,
+        y: 1.0 - event.clientY / window.innerHeight, // Invert Y for shader
+      });
+    };
+
+    // Scroll tracking
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   useFrame((state, delta) => {
     if (shaderRef.current) {
-      shaderRef.current.uTime += delta * 0.2;
+      // Update time
+      shaderRef.current.uTime += delta * 0.3;
+      
+      // Smooth mouse interpolation
+      shaderRef.current.uMouse.lerp(
+        new THREE.Vector2(mouse.x, mouse.y),
+        delta * 2.0
+      );
+      
+      // Update scroll position
+      shaderRef.current.uScrollY = scrollY;
     }
   });
 
   return (
     <>
       <Plane args={[10, 10]} scale={[viewport.width, viewport.height, 1]}>
-        {React.createElement("pseudo3DMaterial", {
+        {React.createElement("enhancedBackgroundMaterial", {
           ref: shaderRef,
+          uColorPrimary: new THREE.Color("#ffffff"),
+          uColorSecondary: new THREE.Color("#111111"),
+          uColorAccent: new THREE.Color("#666666"),
+          uNoiseScale: 4.0,
+          uNoiseSpeed: 0.15,
+          uMouseInfluence: 0.3,
         })}
       </Plane>
     </>

@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import AnimUp from "../animated/AnimUp";
 import { useInView } from "react-intersection-observer";
 import { useForm } from "react-hook-form";
+import { motion } from "framer-motion";
 
 // Define the form data interface
 interface FormData {
@@ -46,11 +47,16 @@ function ContactForm() {
           "Content-Type": "application/json",
           Accept: "application/json"
         },
+        mode: "cors", // Add CORS mode
         body: JSON.stringify({
-          access_key: "acf20b58-5fb9-4d3d-90f0-f8cb5095fbd3", 
+          access_key: "acf20b58-5fb9-4d3d-90f0-f8cb5095fbd3",
           ...data
         })
       });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       
       const result = await response.json();
       
@@ -64,7 +70,11 @@ function ContactForm() {
       }
     } catch (error) {
       setIsSuccess(false);
-      setMessage("An error occurred. Please try again later.");
+      setMessage(
+        error instanceof Error 
+          ? error.message 
+          : "An error occurred. Please try again later."
+      );
       console.error("Form submission error:", error);
     }
   };
@@ -209,23 +219,33 @@ function ContactForm() {
         </div>
 
         <AnimUp inView={inView} duration={2.6}>
-          <button
+          <motion.button
             type="submit"
             disabled={isSubmitting}
             className="group relative overflow-hidden rounded-full border border-white/20 px-8 py-4 font-Antonio text-lg uppercase transition-all duration-500 hover:border-white hover:bg-white hover:text-background disabled:opacity-70"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.2 }}
           >
             {isSubmitting ? (
               <div className="flex items-center justify-center">
-                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <motion.svg 
+                  className="-ml-1 mr-3 h-5 w-5 text-white" 
+                  xmlns="http://www.w3.org/2000/svg" 
+                  fill="none" 
+                  viewBox="0 0 24 24"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                >
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+                </motion.svg>
                 Sending...
               </div>
             ) : (
               "Send Message"
             )}
-          </button>
+          </motion.button>
         </AnimUp>
       </form>
     </div>

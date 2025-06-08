@@ -25,11 +25,11 @@ function AboutSection() {
           />
         </motion.div>
 
-        <p className="absolute left-5 top-10 w-8/12 text-sm md:text-base lg:left-10 lg:w-6/12 ">
-          I am a passionate creative developer who combines technical expertise with artistic vision. 
-          My journey in web development spans several years, during which I&apos;ve honed my skills in 
-          modern technologies and design principles. I believe in creating digital experiences that 
-          not only function flawlessly but also inspire and engage users through thoughtful design 
+        <p className="absolute left-5 top-10 w-8/12 text-sm md:text-base lg:left-10 lg:w-6/12">
+          I am a passionate creative developer who combines technical expertise with artistic vision.
+          My journey in web development spans several years, during which I&apos;ve honed my skills in
+          modern technologies and design principles. I believe in creating digital experiences that
+          not only function flawlessly but also inspire and engage users through thoughtful design
           and innovative interactions.
         </p>
         <h2 className="-bottom-22 absolute bottom-1/2 left-1/2 w-full -translate-x-1/2 translate-y-1/2  text-center font-humane text-[10rem] leading-[0.9]  md:text-[20rem]">
