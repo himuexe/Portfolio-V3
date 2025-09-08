@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Himanshu Sharma | Creative Full Stack Developer",
     description: "Creative developer  crafting exceptional digital experiences with modern web technologies.",
-    creator: "@himuexe",
+    creator: "@luv_vice",
   },
   robots: {
     index: true,

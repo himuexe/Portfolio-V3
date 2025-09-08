@@ -30,7 +30,7 @@ const defaultSocialMedia: SocialMedia[] = [
   {
     _id: "3",
     name: "X",
-    link: "https://twitter.com/himuexe"
+    link: "https://twitter.com/luv_vice"
   }
 ];
 
